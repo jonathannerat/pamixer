@@ -3,7 +3,7 @@
 pamixer is like amixer but for pulseaudio. It can control the volume levels of
 the sinks.
 
-lso, this project can provide you a small C++ library to control pulseaudio.
+Also, this project can provide you a small C++ library to control pulseaudio.
 
 == This fork
 
