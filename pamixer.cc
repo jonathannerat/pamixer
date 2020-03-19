@@ -34,6 +34,7 @@ using namespace std;
 void conflicting_options(const po::variables_map& vm, const char* opt1, const char* opt2);
 Device get_selected_device(Pulseaudio& pulse, po::variables_map vm, string sink_name, string source_name);
 int gammaCorrection(int i, double gamma, int delta);
+pa_volume_t convert_percentage(int v);
 int main(int argc, char* argv[]);
 
 
@@ -78,10 +79,14 @@ pa_volume_t gammaCorrection(pa_volume_t i, double gamma, int delta) {
     return (pa_volume_t) round(j);
 }
 
+pa_volume_t convert_percentage(int v) {
+    return round((double)v * (double)PA_VOLUME_NORM / 100.0);
+}
+
 int main(int argc, char* argv[])
 {
     string sink_name, source_name;
-    int value;
+    int value, max_vol, min_vol;
     double gamma;
 
     po::options_description options("Allowed options");
@@ -92,6 +97,8 @@ int main(int argc, char* argv[])
         ("default-source", "select the default source")
         ("get-volume", "get the current volume")
         ("get-volume-human", "get the current volume percentage or the string \"muted\"")
+        ("min-volume", po::value<int>(&min_vol)->default_value(0), "prevent following volume changes to go below this value")
+        ("max-volume", po::value<int>(&max_vol)->default_value(100), "prevent following volume changes to go above this value")
         ("set-volume", po::value<int>(&value), "set the volume")
         ("increase,i", po::value<int>(&value), "increase the volume")
         ("decrease,d", po::value<int>(&value), "decrease the volume")
@@ -143,15 +150,25 @@ int main(int argc, char* argv[])
 
             pa_volume_t new_value = 0;
             if (vm.count("set-volume")) {
-                new_value = round( (double)value * (double)PA_VOLUME_NORM / 100.0);
+                new_value = convert_percentage(value);
             } else if (vm.count("increase")) {
                 new_value = gammaCorrection(device.volume_avg, gamma,  value);
             } else if (vm.count("decrease")) {
                 new_value = gammaCorrection(device.volume_avg, gamma, -value);
             }
 
+            pa_volume_t limit = convert_percentage(max_vol);
+            if (vm.count("max-volume") && new_value > limit) {
+                new_value = limit;
+            }
+
             if (!vm.count("allow-boost") && new_value > PA_VOLUME_NORM) {
                 new_value = PA_VOLUME_NORM;
+            }
+
+            limit = convert_percentage(min_vol);
+            if (vm.count("min-volume") && new_value < limit) {
+                new_value = limit;
             }
 
             pulse.set_volume(device, new_value);

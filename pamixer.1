@@ -43,6 +43,19 @@ Get the current volume.
 Get the current volume percentage or the string "muted".
 
 .TP
+.BI \-\-min-volume " PERCENTAGE"
+.br
+Prevent following volume changes to go below this value
+
+.TP
+.BI \-\-max-volume " PERCENTAGE"
+.br
+Prevent following volume changes to go above this value
+(needs 
+.B \-\-allow-boost
+to set a max volume above 100%)
+
+.TP
 .BI \-\-set-volume " PERCENTAGE"
 .br
 Set the volume.
