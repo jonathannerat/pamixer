@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
     int value, max_vol, min_vol;
     double gamma;
 
-    po::options_description options("Allowed options");
+    po::options_description options("Allowed options", 100);
     options.add_options()
         ("help,h", "help message")
         ("sink", po::value(&sink_name), "choose a different sink than the default")
