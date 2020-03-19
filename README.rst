@@ -19,12 +19,12 @@ Shift+Vol[+|-] binded to `pamixer [-i|-d] 5` which causes the following:
 * Using Shift+Vol[+|-] keys lets me increase/decrease volume unrestrictedly
 * With Vol[+|-] keys:
   * Volume can't go above MAX
-  * If volume is above MAX and is decreased, then if new volume is:
+  * If volume is above MAX and is modified, then if new volume is:
     * > MAX: new volume is set to MAX
     * <= MAX: new volume is preserved
 
     This let's us quickly decrease the volume if it's too high. e.g.: volume is
-    at 100% and MAX=50%, then by pressing Vol- we can set the volume to 50% 
+    at 100% and MAX=50%, then by pressing Vol[+|-] we can set the volume to 50% 
 
 Features
 --------
@@ -61,23 +61,22 @@ Installation
         ./pamixer --help
 
         Allowed options:
-          -h [ --help ]           help message
-          --sink arg              choose a different sink than the default
-          --source arg            choose a different source than the default
-          --default-source        select the default source
-          --get-volume            get the current volume
-          --get-volume-human      get the current volume percentage or the string "muted"
-          --min-volume arg (=0)   prevent following volume changes to go below this value
-          --max-volume arg (=100) prevent following volume changes to go above this value
-          --set-volume arg        set the volume
-          -i [ --increase ] arg   increase the volume
-          -d [ --decrease ] arg   decrease the volume
-          -t [ --toggle-mute ]    switch between mute and unmute
-          -m [ --mute ]           set mute
-          --allow-boost           allow volume to go above 100%
-          --gamma arg (=1)        increase/decrease using gamma correction e.g. 2.2
-          -u [ --unmute ]         unset mute
-          --get-mute              display true if the volume is mute, false otherwise
-          --list-sinks            list the sinks
-          --list-sources          list the sources
-
+          -h [ --help ]         help message
+          --sink arg            choose a different sink than the default
+          --source arg          choose a different source than the default
+          --default-source      select the default source
+          --get-volume          get the current volume
+          --get-volume-human    get the current volume percentage or the string "muted"
+          --min-volume arg      prevent volume changes to go below this value
+          --max-volume arg      prevent volume changes to go above this value
+          --set-volume arg      set the volume
+          -i [ --increase ] arg increase the volume
+          -d [ --decrease ] arg decrease the volume
+          -t [ --toggle-mute ]  switch between mute and unmute
+          -m [ --mute ]         set mute
+          --allow-boost         allow volume to go above 100%
+          --gamma arg (=1)      increase/decrease using gamma correction e.g. 2.2
+          -u [ --unmute ]       unset mute
+          --get-mute            display true if the volume is mute, false otherwise
+          --list-sinks          list the sinks
+          --list-sources        list the sources

@@ -97,8 +97,8 @@ int main(int argc, char* argv[])
         ("default-source", "select the default source")
         ("get-volume", "get the current volume")
         ("get-volume-human", "get the current volume percentage or the string \"muted\"")
-        ("min-volume", po::value<int>(&min_vol)->default_value(0), "prevent following volume changes to go below this value")
-        ("max-volume", po::value<int>(&max_vol)->default_value(100), "prevent following volume changes to go above this value")
+        ("min-volume", po::value<int>(&min_vol), "prevent following volume changes to go below this value")
+        ("max-volume", po::value<int>(&max_vol), "prevent following volume changes to go above this value")
         ("set-volume", po::value<int>(&value), "set the volume")
         ("increase,i", po::value<int>(&value), "increase the volume")
         ("decrease,d", po::value<int>(&value), "decrease the volume")
@@ -157,18 +157,22 @@ int main(int argc, char* argv[])
                 new_value = gammaCorrection(device.volume_avg, gamma, -value);
             }
 
-            pa_volume_t limit = convert_percentage(max_vol);
-            if (vm.count("max-volume") && new_value > limit) {
-                new_value = limit;
-            }
-
-            if (!vm.count("allow-boost") && new_value > PA_VOLUME_NORM) {
+            if (vm.count("max-volume")) {
+                pa_volume_t limit = convert_percentage(max_vol);
+                if (vm.count("allow-boost")) {
+                    new_value = new_value > limit ? limit : new_value;
+                } else {
+                    new_value = limit < PA_VOLUME_NORM ? limit : PA_VOLUME_NORM;
+                }
+            } else if (!vm.count("allow-boost") && new_value > PA_VOLUME_NORM) {
                 new_value = PA_VOLUME_NORM;
             }
 
-            limit = convert_percentage(min_vol);
-            if (vm.count("min-volume") && new_value < limit) {
-                new_value = limit;
+            if (vm.count("min-volume")) {
+                pa_volume_t limit = convert_percentage(min_vol);
+                if (new_value < limit) {
+                    new_value = limit;
+                }
             }
 
             pulse.set_volume(device, new_value);
