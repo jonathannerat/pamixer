@@ -162,7 +162,9 @@ int main(int argc, char* argv[])
                 if (vm.count("allow-boost")) {
                     new_value = new_value > limit ? limit : new_value;
                 } else {
-                    new_value = limit < PA_VOLUME_NORM ? limit : PA_VOLUME_NORM;
+                    if (! (new_value < limit && new_value < PA_VOLUME_NORM) ) { 
+                        new_value = limit < PA_VOLUME_NORM ? limit : PA_VOLUME_NORM;
+                    }
                 }
             } else if (!vm.count("allow-boost") && new_value > PA_VOLUME_NORM) {
                 new_value = PA_VOLUME_NORM;
